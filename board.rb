@@ -1,31 +1,31 @@
 class Board
-  attr_reader :board
+  attr_reader :board, :size
 
-  def initialize(size = 3)
-    @size = size
+  def initialize
+    @size = 3
     @board = create_board
   end
 
   public
 
+  def place_piece(player_id, x, y)
+    @board[x][y] = player_id
+  end
+
   def to_s
+    result = ""
     @board.each do |x|
-      @board[x].each do |y|
-        puts @board.to_s
-      end
+      result += "#{x[0]} | #{x[1]} | #{x[2]} \n"
     end
+    result
   end
 
   private
 
   def create_board
-    # [[x,y,player_id]]
-    board = []
-    @size.times do |x|
-      @size.times do |y|
-        board.push([x, y, 0])
-      end
-    end
-    board
+    # HACK: change this to use a size parameter in initialize
+    @board = [[0,0,0],
+              [0,0,0],
+              [0,0,0]]
   end
 end
