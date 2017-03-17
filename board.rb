@@ -1,26 +1,41 @@
 class Board
   attr_reader :board, :size
 
+  @@free_cells = 0
+
   @@valid_input = {
-    top_left:   [0,0],
-    top_center: [0,1],
-    top_right:  [0,2],
-    mid_left:   [1,0],
-    mid_center: [1,1],
-    mid_right:  [1,2],
-    low_left:   [2,0],
-    low_center: [2,1],
-    low_right:  [2,2],
-    topleft:    [0,0],
-    topcenter:  [0,1],
-    topright:   [0,2],
-    midleft:    [1,0],
-    midcenter:  [1,1],
-    midright:   [1,2],
-    lowleft:    [2,0],
-    lowcenter:  [2,1],
-    lowright:   [2,2],
-    help:       "help"
+    top_left:      [0,0],
+    top_center:    [0,1],
+    top_right:     [0,2],
+    mid_left:      [1,0],
+    mid_center:    [1,1],
+    mid_right:     [1,2],
+    low_left:      [2,0],
+    low_center:    [2,1],
+    low_right:     [2,2],
+    topleft:       [0,0],
+    topcenter:     [0,1],
+    topright:      [0,2],
+    midleft:       [1,0],
+    midcenter:     [1,1],
+    midright:      [1,2],
+    lowleft:       [2,0],
+    lowcenter:     [2,1],
+    lowright:      [2,2],
+    lowerleft:     [2,0],
+    lowercenter:   [2,1],
+    lowerright:    [2,2],
+    bottomleft:    [2,0],
+    bottomcenter:  [2,1],
+    bottomright:   [2,2],
+    lower_left:     [2,0],
+    lower_center:   [2,1],
+    lower_right:    [2,2],
+    bottom_left:    [2,0],
+    bottom_center:  [2,1],
+    bottom_right:   [2,2],
+    help:          "help",
+    exit:          "exit"
   }
   def initialize
     @board = create_board
@@ -29,11 +44,8 @@ class Board
 
   public
 
-  def reset
-    create_board
-  end
-
   def place_piece(player_id, x, y)
+    @@free_cells -= 1
     @board[x][y] = player_id
   end
 
@@ -49,6 +61,10 @@ class Board
       result += i == 2 ? "   |   |    \n" : "___|___|___ \n"
     end
     result
+  end
+
+  def draw?
+    @@free_cells == 0
   end
 
   def victory?
@@ -72,6 +88,7 @@ class Board
   private
 
   def create_board
+    @@free_cells = 9
     @board = [[0,0,0],
               [0,0,0],
               [0,0,0]]
