@@ -2,7 +2,6 @@ require './person.rb'
 require './board.rb'
 require 'pp'
 
-
 def clear
   system "clear" || "cls"
 end
@@ -11,6 +10,9 @@ def get_player_input
   gets.chomp.strip.gsub(/\s+/, "_").downcase
 end
 
+def next_turn(turn_array, current_turn)
+  current_turn < turn_array.length - 1 ? current_turn + 1 : 1
+end
 
 clear
 puts "Player1: Enter your name."
@@ -44,6 +46,7 @@ loop do
         player_input = Board.valid_input[player_input.to_sym]
         if (game_board.spot_taken?(player_input[0], player_input[1]))
           puts "Cell already taken!"
+          puts "[PRESS ENTER]"
           gets.chomp
           next
         else
@@ -55,13 +58,23 @@ loop do
     end
   rescue
     puts "Please enter a valid command. Enter 'help' for a list of options you can use. "
+    puts "[PRESS ENTER]"
     gets.chomp
     next
   end
+
+  # check for victory
   if(game_board.victory?)
     winner = player_turn
+    clear
+    puts game_board.to_s
+    puts "=============="
+    puts "= GAME OVER! ="
+    puts "=============="
+    puts "#{Person.players[winner]} wins!"
+
   else
-    player_turn = player_turn < Person.players.length - 1 ? player_turn + 1 : 1
+    player_turn = next_turn(Person.players, player_turn)
     puts player_turn
   end
   break if game_board.victory?

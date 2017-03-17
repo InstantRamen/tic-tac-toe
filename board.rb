@@ -43,13 +43,23 @@ class Board
       result += "   |   |   \n"\
                 " #{@pieces[x[0]]} | #{@pieces[x[1]]} | #{@pieces[x[2]]} \n"
       result += i == 2 ? "   |   |    \n" : "___|___|___ \n"
-
-      
     end
     result
   end
 
   def victory?
+    # VICTORY CONDITIONS:
+    # if any row is all 1 or 2
+    verticals = [[@board[0][0], @board[1][0], @board[2][0]],
+                 [@board[0][1], @board[1][1], @board[2][1]],
+                 [@board[0][2], @board[1][2], @board[2][2]]]
+    @board.each_with_index do |row_arr, item|
+      if row_arr.any? {|id| id == 0}
+        next
+      else
+        return true if row_arr.all? {|id| id == 1 || id == 2}
+      end
+    end
     false
   end
 
@@ -70,8 +80,8 @@ class Board
   def self.help
     @@valid_input.each do |key, value|
       puts "#{key}"
-      puts "[PRESS ENTER]"
     end
+    puts "[PRESS ENTER]"
   end
 
   def self.valid_input?(input)
