@@ -33,6 +33,10 @@ class Board
     @board[x][y] = player_id
   end
 
+  def spot_taken?(x, y)
+    @board[x][y] != 0
+  end
+
   def to_s
     result = ""
     @board.each_with_index do |x, i|

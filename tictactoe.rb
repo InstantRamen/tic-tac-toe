@@ -30,6 +30,8 @@ loop do
   clear
   # update game board
   puts game_board.to_s
+
+  # game logic
   puts "#{Person.players[player_turn]}, where do you want to put your piece? Enter 'help' to get a list of valid input options."
   begin
     player_input = get_player_input
@@ -40,7 +42,13 @@ loop do
         next
       else
         player_input = Board.valid_input[player_input.to_sym]
-        game_board.place_piece(player_turn, player_input[0].to_i, player_input[1].to_i)
+        if (game_board.spot_taken?(player_input[0], player_input[1]))
+          puts "Cell already taken!"
+          gets.chomp
+          next
+        else
+          game_board.place_piece(player_turn, player_input[0].to_i, player_input[1].to_i) 
+        end
       end
     else
       raise "Error"
