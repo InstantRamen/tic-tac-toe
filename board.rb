@@ -24,10 +24,14 @@ class Board
   }
   def initialize
     @board = create_board
-    @pieces = ["N", "X", "O"] 
+    @pieces = [" ", "X", "O"] 
   end
 
   public
+
+  def reset
+    create_board
+  end
 
   def place_piece(player_id, x, y)
     @board[x][y] = player_id
@@ -50,17 +54,19 @@ class Board
   def victory?
     # VICTORY CONDITIONS:
     # if any row is all 1 or 2
+    horizontals = @board
+
     verticals = [[@board[0][0], @board[1][0], @board[2][0]],
                  [@board[0][1], @board[1][1], @board[2][1]],
                  [@board[0][2], @board[1][2], @board[2][2]]]
-    @board.each_with_index do |row_arr, item|
-      if row_arr.any? {|id| id == 0}
-        next
-      else
-        return true if row_arr.all? {|id| id == 1 || id == 2}
-      end
-    end
-    false
+
+    diagonals = [[@board[0][0], @board[1][1], @board[2][2]],
+                 [@board[0][2], @board[1][1], @board[2][0]]]
+
+    # check matches
+    return matches?(horizontals) ||
+           matches?(verticals)   ||
+           matches?(diagonals)
   end
 
   private
@@ -69,6 +75,17 @@ class Board
     @board = [[0,0,0],
               [0,0,0],
               [0,0,0]]
+  end
+
+  def matches?(row_arr)
+    row_arr.each do |arr|
+      if arr.any? {|id| id == 0} 
+        next
+      else
+        return true if arr.all? {|id| id == 1} || arr.all? {|id| id == 2}
+      end
+    end
+    false
   end
 
   public
