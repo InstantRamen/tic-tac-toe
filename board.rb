@@ -2,7 +2,6 @@ class Board
   attr_reader :board, :size
 
   @@free_cells = 0
-
   @@valid_input = {
     top_left:      [0,0],
     top_center:    [0,1],
@@ -67,6 +66,7 @@ class Board
 
   def to_s
     result = ""
+    # draw the board
     @board.each_with_index do |x, i|
       result += "   |   |   \n"\
                 " #{@pieces[x[0]]} | #{@pieces[x[1]]} | #{@pieces[x[2]]} \n"
@@ -80,8 +80,6 @@ class Board
   end
 
   def victory?
-    # VICTORY CONDITIONS:
-    # if any row is all 1 or 2
     horizontals = @board
 
     verticals = [[@board[0][0], @board[1][0], @board[2][0]],
@@ -106,6 +104,7 @@ class Board
               [0,0,0]]
   end
 
+  # check if given cells are the same
   def matches?(row_arr)
     row_arr.each do |arr|
       if arr.any? {|id| id == 0} 
@@ -131,6 +130,19 @@ class Board
   end
 
   def self.valid_input?(input)
-    true
+    true # all valid input? I can't remember why I did this. I'll remove it later.
+  end
+
+  def to_binary
+    cells = []
+    board.each do |x|
+      x.each do |y|
+        if spot_taken? x, y
+          cells << 1
+        else
+          cells << 0
+        end
+      end
+    end
   end
 end

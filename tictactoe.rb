@@ -1,40 +1,58 @@
 class TicTacToe
-  def initialize
+
+  # override gets to use STDIN
+  # without this, ARGV doesn't work
+  def gets
+    STDIN.gets
+  end
+
+  def initialize(auto = false)
     clear
 
-    puts "How would you like to play?"
-    puts "(1) Player(X) vs Player(O)"
-    puts "(2) Player(X) vs AI(O)"
-    puts "(3) AI(X) vs Player(O)"
-    puts "(4) AI(X) vs AI(O)"
-    play_mode = gets.chomp
-    clear
+    @players = []
+    @player_info = [
+      {id: 1, name: "Player", ai?: false},
+      {id: 2, name: "AI", ai?: true}
+    ]
+
+    setup if auto
 
     puts "Player1: Enter your name."
-    player1_name = gets.chomp
+    @player_info[0][:name] = gets.chomp
+    puts "#{@player_info[0][:name]}: Is this player an AI? (Y/N)"
+    @player_info[0][:ai?] = gets.chomp.downcase == "y"
     clear
 
     puts "Player2: Enter your name."
-    player2_name = gets.chomp
+    @player_info[1][:name] = gets.chomp
+    puts "#{@player_info[0][:name]} Is this player an AI? (Y/N)"
+    @player_info[1][:ai?] = gets.chomp.downcase == "y"
 
-    setup(player1_name, player2_name, play_mode)
+    setup
   end
 
-  def setup(player1_name, player2_name, play_mode = 1)
+
+  def setup(player_info = @player_info)
     clear
-    @player1 = Person.new(1, player1_name)
-    @player2 = Person.new(2, player2_name)
+
+    @player1 = create_player(player_info[0])
+    @player2 = create_player(player_info[1])
 
     @player_turn = 1
     @game_board = Board.new
     update
   end
-  def clear
-    system "clear" || "cls"
+
+  def create_player(player)
+    if player[:ai?]
+      AI.new(player[:id], player[:name])
+    else
+      Person.new(player[:id], player[:name])
+    end
   end
 
-  def get_player_input
-    gets.chomp.strip.gsub(/\s+/, "_").downcase
+  def clear
+    system "clear" || "cls"
   end
 
   def next_turn(turn_array, current_turn)
@@ -61,10 +79,16 @@ class TicTacToe
       puts @game_board.to_s
 
       # game logic
-      puts "#{Person.players[@player_turn]}, where do you want to put your piece? Enter 'help' to get a list of valid input options."
+      current_player = Person.players[@player_turn]
+      puts "#{current_player.name}, where do you want to put your piece? Enter 'help' to get a list of valid input options."
       begin
-        player_input = get_player_input
+        # get player input
+        player_input = current_player.decide_input(@game_board)
+
+        # handle player input
         if Board.valid_input?(player_input)
+          puts "#{player_input[1]} valid"
+
           if player_input == "help"
             Board.help
             gets.chomp
@@ -76,7 +100,8 @@ class TicTacToe
               next
             end
           else
-            player_input = Board.valid_input[player_input.to_sym]
+            player_input = Board.valid_input[player_input.to_sym] unless current_player.is_a?(AI)
+            puts player_input
             if (@game_board.spot_taken?(player_input[0], player_input[1]))
               puts "Cell already taken!"
               puts "[PRESS ENTER]"
@@ -104,9 +129,9 @@ class TicTacToe
         puts "=============="
         puts "= GAME OVER! ="
         puts "===>WINNER<==="
-        puts "#{Person.players[winner]} wins!"
+        puts "#{Person.players[winner].name} wins!"
         if play_again?
-          setup(@player1.name, @player2.name)
+          setup
         else
           break
         end
@@ -117,7 +142,7 @@ class TicTacToe
         puts "= GAME OVER! ="
         puts "====>DRAW<===="
         if play_again?
-          setup(@player1.name, @player2.name)
+          setup
         else
           break
         end
