@@ -1,5 +1,5 @@
 class TicTacToe
-
+  @debug = true
   # override gets to use STDIN
   # without this, ARGV doesn't work
   def gets
@@ -75,47 +75,44 @@ class TicTacToe
     # main game loop
     loop do
       clear
+
       # update game board
       puts @game_board.to_s
 
       # game logic
       current_player = Person.players[@player_turn]
       puts "#{current_player.name}, where do you want to put your piece? Enter 'help' to get a list of valid input options."
+      
+      # get player input
+      player_input = current_player.decide_input(@game_board)
+
+      # handle player input
       begin
-        # get player input
-        player_input = current_player.decide_input(@game_board)
-
-        # handle player input
-        if Board.valid_input?(player_input)
-          puts "#{player_input[1]} valid"
-
-          if player_input == "help"
-            Board.help
-            gets.chomp
-            next
-          elsif player_input == "exit"
-            if quit?
-              break
-            else
-              next
-            end
+        if player_input == "help"
+          Board.help
+          gets.chomp
+          next
+        elsif player_input == "exit"
+          if quit?
+            break
           else
-            player_input = Board.valid_input[player_input.to_sym] unless current_player.is_a?(AI)
-            puts player_input
-            if (@game_board.spot_taken?(player_input[0], player_input[1]))
-              puts "Cell already taken!"
-              puts "[PRESS ENTER]"
-              gets.chomp
-              next
-            else
-              @game_board.place_piece(@player_turn, player_input[0].to_i, player_input[1].to_i) 
-            end
+            next
           end
         else
-          raise "Error"
+          player_input = Board.valid_input[player_input.to_sym] unless current_player.is_a?(AI)
+          puts "player_input: #{player_input} <------" if @debug
+          if (@game_board.spot_taken?(player_input[0], player_input[1]))
+            puts "Cell already taken!"
+            puts "[PRESS ENTER]"
+            gets.chomp
+            next
+          else
+            @game_board.place_piece(@player_turn, player_input[0].to_i, player_input[1].to_i) 
+          end
         end
       rescue
-        puts "Please enter a valid command. Enter 'help' for a list of options you can use. "
+        puts "#{player_input}[#{player_input.class}]is not a valid command!"
+        puts "Please enter a valid command! Enter 'help' for a list of options you can use. "
         puts "[PRESS ENTER]"
         gets.chomp
         next

@@ -75,6 +75,17 @@ class Board
     result
   end
 
+  def to_s_new
+    result = ""
+    # draw the board
+    @board.each_with_index do |x, i|
+      result += "   \#   \#   \n"\
+                " #{@pieces[x[0]]} \# #{@pieces[x[1]]} \# #{@pieces[x[2]]} \n"
+      result += i == 2 ? "   \#   \#    \n" : "\#\#\#\#\#\#\#\#\#\#\# \n"
+    end
+    result
+  end
+
   def draw?
     @@free_cells == 0
   end
@@ -127,22 +138,5 @@ class Board
       puts "#{key}"
     end
     puts "[PRESS ENTER]"
-  end
-
-  def self.valid_input?(input)
-    true # all valid input? I can't remember why I did this. I'll remove it later.
-  end
-
-  def to_binary
-    cells = []
-    board.each do |x|
-      x.each do |y|
-        if spot_taken? x, y
-          cells << 1
-        else
-          cells << 0
-        end
-      end
-    end
   end
 end
