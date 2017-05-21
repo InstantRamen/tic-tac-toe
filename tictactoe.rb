@@ -1,20 +1,26 @@
-require './person.rb'
-require './board.rb'
-
 class TicTacToe
   def initialize
     clear
+
+    puts "How would you like to play?"
+    puts "(1) Player(X) vs Player(O)"
+    puts "(2) Player(X) vs AI(O)"
+    puts "(3) AI(X) vs Player(O)"
+    puts "(4) AI(X) vs AI(O)"
+    play_mode = gets.chomp
+    clear
+
     puts "Player1: Enter your name."
     player1_name = gets.chomp
-
     clear
+
     puts "Player2: Enter your name."
     player2_name = gets.chomp
 
-    setup(player1_name, player2_name)
+    setup(player1_name, player2_name, play_mode)
   end
 
-  def setup(player1_name, player2_name)
+  def setup(player1_name, player2_name, play_mode = 1)
     clear
     @player1 = Person.new(1, player1_name)
     @player2 = Person.new(2, player2_name)
@@ -123,4 +129,3 @@ class TicTacToe
     end
   end
 end
-game = TicTacToe.new
