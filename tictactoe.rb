@@ -1,3 +1,7 @@
+require './board.rb'
+require './person.rb'
+require './ai.rb'
+
 class TicTacToe
   @debug = true
   # override gets to use STDIN
@@ -25,7 +29,7 @@ class TicTacToe
 
     puts "Player2: Enter your name."
     @player_info[1][:name] = gets.chomp
-    puts "#{@player_info[0][:name]} Is this player an AI? (Y/N)"
+    puts "#{@player_info[1][:name]} Is this player an AI? (Y/N)"
     @player_info[1][:ai?] = gets.chomp.downcase == "y"
 
     setup

@@ -75,17 +75,6 @@ class Board
     result
   end
 
-  def to_s_new
-    result = ""
-    # draw the board
-    @board.each_with_index do |x, i|
-      result += "   \#   \#   \n"\
-                " #{@pieces[x[0]]} \# #{@pieces[x[1]]} \# #{@pieces[x[2]]} \n"
-      result += i == 2 ? "   \#   \#    \n" : "\#\#\#\#\#\#\#\#\#\#\# \n"
-    end
-    result
-  end
-
   def draw?
     @@free_cells == 0
   end
@@ -101,9 +90,49 @@ class Board
                  [@board[0][2], @board[1][1], @board[2][0]]]
 
     # check matches
-    return matches?(horizontals) ||
-           matches?(verticals)   ||
-           matches?(diagonals)
+    victory = matches?(horizontals) +
+              matches?(verticals)   +
+              matches?(diagonals)
+    if(victory > 0)
+      # return id of winner(1 or 2)
+      victory
+    else
+      false
+    end
+  end
+
+    # return contents of cell (0,1,2)
+  def check_cell(cell_row, cell_col)
+    @board[cell_row][cell_col]
+  end
+
+  def each
+    each_with_index do |cell, i|
+      yield cell
+    end
+  end
+
+  def each_with_index # |cell, index| where index is array of row and column indices
+    @board.each_with_index do |row, row_index|
+      row.each_with_index do |col, col_index|
+        cell = @board[row_index][col_index]
+        yield cell, [row_index, col_index]
+      end
+    end
+  end
+
+  def each_free_with_index
+    each_with_index do |cell, i|
+      next if cell == 0
+      yield cell, i
+    end
+  end
+
+  def each_free
+    each_free do |cell, i|
+      yield cell
+    end
+
   end
 
   private
@@ -116,15 +145,16 @@ class Board
   end
 
   # check if given cells are the same
-  def matches?(row_arr)
-    row_arr.each do |arr|
+  def matches?(cells = [])
+    cells.each do |arr|
       if arr.any? {|id| id == 0} 
         next
       else
-        return true if arr.all? {|id| id == 1} || arr.all? {|id| id == 2}
+        return 1 if arr.all? {|id| id == 1}
+        return 2 if arr.all? {|id| id == 2}
       end
     end
-    false
+    0 # return 0 if given cells don't match
   end
 
   public
