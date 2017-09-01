@@ -6,6 +6,14 @@ class TicTacToe
     STDIN.gets
   end
 
+  def player_init(player_id)
+    puts "Player#{player_id + 1}: Enter your name."
+    @player_info[player_id][:name] = gets.chomp
+    puts "#{@player_info[player_id][:name]}: Is this player an AI? (Y/N)"
+    @player_info[player_id][:ai?] = gets.chomp.downcase == "y"
+    clear
+  end
+
   def initialize(auto = false)
     clear
 
@@ -17,16 +25,8 @@ class TicTacToe
 
     setup if auto
 
-    puts "Player1: Enter your name."
-    @player_info[0][:name] = gets.chomp
-    puts "#{@player_info[0][:name]}: Is this player an AI? (Y/N)"
-    @player_info[0][:ai?] = gets.chomp.downcase == "y"
-    clear
-
-    puts "Player2: Enter your name."
-    @player_info[1][:name] = gets.chomp
-    puts "#{@player_info[0][:name]} Is this player an AI? (Y/N)"
-    @player_info[1][:ai?] = gets.chomp.downcase == "y"
+    player_init 0
+    player_init 1
 
     setup
   end
