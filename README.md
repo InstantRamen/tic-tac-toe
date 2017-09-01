@@ -5,5 +5,5 @@ It includes a very basic(read 'random') AI.
 
 # To start playing:
 - clone reprository: `git clone git@github.com:InstantRamen/tic-tac-toe.git`
-- run the game: `ruby tictactoe.rb`
+- run the game: `ruby app.rb`
 - To get a list of valid commands, use the command `help`
