@@ -1,6 +1,7 @@
 # Tic Tac Toe
 
-A simple Tic-Tac-Toe game created for The Odin Project
+A simple command-line Tic-Tac-Toe game written in Ruby.  
+It includes a very basic(read 'random') AI.  
 
 # To start playing:
 - clone reprository: `git clone git@github.com:InstantRamen/tic-tac-toe.git`
